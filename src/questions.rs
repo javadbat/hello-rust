@@ -2,20 +2,20 @@ use serde::Serialize;
 use std::io::{Error, ErrorKind};
 use std::str::FromStr;
 use warp::{reject::Reject};
+use serde::{Deserialize};
+#[derive(Deserialize,Debug, Serialize, PartialEq, Eq, Hash,Clone,)]
+pub struct QuestionId(String);
 
-#[derive(Debug, Serialize)]
-struct QuestionId(String);
-
-#[derive(Debug, Serialize)]
-struct Question {
-    id: QuestionId,
-    title: String,
-    content: String,
-    tags: Option<Vec<String>>,
+#[derive(Debug, Serialize, Deserialize,Clone,)]
+pub struct Question {
+    pub id: QuestionId,
+    pub title: String,
+    pub content: String,
+    pub tags: Option<Vec<String>>,
 }
 
 impl Question {
-    fn new(id: QuestionId, title: String, content: String, tags: Option<Vec<String>>) -> Self {
+    pub fn new(id: QuestionId, title: String, content: String, tags: Option<Vec<String>>) -> Self {
         Question {
             id,
             title,
@@ -38,11 +38,6 @@ impl std::fmt::Display for QuestionId {
         write!(f, "id: {}", self.0)
     }
 }
-// impl std::fmt::Debug for Question {
-//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-//         write!(f, "{:?}", self.tags)
-//     }
-// }
 impl FromStr for QuestionId {
     type Err = std::io::Error;
     fn from_str(id: &str) -> Result<Self, Self::Err> {
@@ -52,33 +47,22 @@ impl FromStr for QuestionId {
         }
     }
 }
-// fn main() {
+#[derive(Debug)]
+pub struct InvalidId;
+impl Reject for InvalidId {}
+
+// pub async fn get_question() -> Result<impl warp::Reply, warp::Rejection> {
 //     let q_id: QuestionId = QuestionId::from_str("10").expect("No Id Provided");
 //     let tags: Vec<String> = vec![String::from("scrum")];
-//     let q = Question::new(
+//     let question = Question::new(
 //         q_id,
 //         String::from("title"),
 //         "content".to_string(),
 //         Some(tags),
 //     );
-//     println!("{}", q);
+//     let result = match question.id.0.parse::<i32>() {
+//         Err(_) => Err(warp::reject::custom(InvalidId)),
+//         Ok(_) => Ok(warp::reply::json(&question)),
+//     };
+//     return result;
 // }
-#[derive(Debug)]
-pub struct InvalidId;
-impl Reject for InvalidId {}
-
-pub async fn get_question() -> Result<impl warp::Reply, warp::Rejection> {
-    let q_id: QuestionId = QuestionId::from_str("10").expect("No Id Provided");
-    let tags: Vec<String> = vec![String::from("scrum")];
-    let question = Question::new(
-        q_id,
-        String::from("title"),
-        "content".to_string(),
-        Some(tags),
-    );
-    let result = match question.id.0.parse::<i32>() {
-        Err(_) => Err(warp::reject::custom(InvalidId)),
-        Ok(_) => Ok(warp::reply::json(&question)),
-    };
-    return result;
-}
