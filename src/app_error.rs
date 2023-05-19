@@ -22,3 +22,15 @@ impl Display for PaginationError {
 impl Reject for PaginationError{
 
 }
+#[derive(Debug)]
+pub enum QuestionError {
+    QuestionNotFound
+}
+impl Display for QuestionError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match *self {
+            QuestionError::QuestionNotFound => write!(f,"question id you provided is not found"),
+        }
+    }
+}
+impl Reject for QuestionError {}

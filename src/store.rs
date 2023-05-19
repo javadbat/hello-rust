@@ -1,13 +1,14 @@
 use crate::questions::{Question, QuestionId};
-use std::{collections::HashMap};
+use std::{collections::HashMap, sync::Arc,};
+use tokio::sync::RwLock;
 #[derive(Clone)]
 pub struct Store {
-    pub questions: HashMap<QuestionId, Question>,
+    pub questions:  Arc<RwLock<HashMap<QuestionId, Question>>>,
 }
 impl Store {
     pub fn new() -> Self {
         Store {
-            questions: Self::init(),
+            questions: Arc::new(RwLock::new(Self::init())),
         }
     }
     // fn add_question(mut self, new_question: Question) -> Self {

@@ -6,6 +6,11 @@ use serde::{Deserialize};
 #[derive(Deserialize,Debug, Serialize, PartialEq, Eq, Hash,Clone,)]
 pub struct QuestionId(String);
 
+impl QuestionId{
+    pub fn new(id: String)->Self{
+        return QuestionId(id);
+    }
+}
 #[derive(Debug, Serialize, Deserialize,Clone,)]
 pub struct Question {
     pub id: QuestionId,
