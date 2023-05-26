@@ -9,7 +9,9 @@ use handle_errors::Error;
 pub async fn get_questions(
     params: HashMap<String, String>,
     store: Store,
+    id: String,
 ) -> Result<impl warp::Reply, warp::Rejection> {
+    log::info!("{} Start querying questions", id);
     if !params.is_empty() {
         let pagination = extract_pagination(params)?;
         let res: Vec<Question> = store.questions.read().await.values().cloned().collect();
